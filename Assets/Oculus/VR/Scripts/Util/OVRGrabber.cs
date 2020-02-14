@@ -19,17 +19,23 @@ using UnityEngine;
 
 /// <summary>
 /// Allows grabbing and throwing of objects with the OVRGrabbable component on them.
-/// OVRGrabbablr componentをアタッチしてオブジェクトを、掴むことと投げることを可能にする
+/// OVRGrabbablr componentをアタッチしているオブジェクトを、掴むことと投げることを可能にする
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
-
+/// このスクリプトをアタッチするHandにはRigidbodyを必要とする
 public class OVRGrabber : MonoBehaviour
 {
     // Grip trigger thresholds for picking up objects, with some hysteresis.
     public float grabBegin = 0.55f;
+    // オブジェクトを掴むときのトリガーのしきい値(0~1の範囲)
+    //この値が高ければ軽い押し込みで掴み、低ければ深く押し込まないと掴むことが可能
     public float grabEnd = 0.35f;
+    // オブジェクトを放すときのトリガーのしきい値(0~1の範囲)
+    // この値が低いほど、トリガーをしっかり離さないとオブジェクトは掴まれたままになる
+
 
     bool alreadyUpdated = false;
+    // falseであれば掴んだ物がhandの子オブジェクトのようについてくる
 
     // Demonstrates parenting the held object to the hand's transform when grabbed.
     // When false, the grabbed object is moved every FixedUpdate using MovePosition.
@@ -38,6 +44,7 @@ public class OVRGrabber : MonoBehaviour
     // tower and noting a complete loss of friction.
     [SerializeField]
     protected bool m_parentHeldObject = false;
+    // falseの場合、掴んだオブジェクトはFixedUpdateにて移動
 
     // If true, will move the hand to the transform specified by m_parentTransform, using MovePosition in
     // FixedUpdate. This allows correct physics behavior, at the cost of some latency.
@@ -51,15 +58,22 @@ public class OVRGrabber : MonoBehaviour
     [SerializeField]
     protected Transform m_gripTransform = null;
     // Child/attached Colliders to detect candidate grabbable objects.
+    // 掴んだオブジェクトの移動先を指定。おおよそ手の握った位置となる
+    // ここが設定されていないと掴もうとしても反応しない
+
     [SerializeField]
     protected Collider[] m_grabVolumes = null;
+    // 掴み判定の大きさ
 
     // Should be OVRInput.Controller.LTouch or OVRInput.Controller.RTouch.
     [SerializeField]
     protected OVRInput.Controller m_controller;
+    // 左右の手に対応するコントローラーを指定すること
 
     [SerializeField]
     protected Transform m_parentTransform;
+    // 自身の親のTransformが入る
+    // 手動で設定されていない場合は、Script側で勝手に設定されるのでさわる必要はない
 
     [SerializeField]
     protected GameObject m_player;
@@ -83,6 +97,7 @@ public class OVRGrabber : MonoBehaviour
     {
         get { return m_grabbedObj; }
     }
+    // 現在掴んでいるオブジェクトを取得
 
 	public void ForceRelease(OVRGrabbable grabbable)
     {
