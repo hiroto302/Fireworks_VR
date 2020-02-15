@@ -69,6 +69,7 @@ namespace OVRTouchSample
             // Collision starts disabled. We'll enable it for certain cases such as making a fist.
             m_colliders = this.GetComponentsInChildren<Collider>().Where(childCollider => !childCollider.isTrigger).ToArray();
             CollisionEnable(false);
+            // Handがアタッチされている子オブジェクトのコライダー(IsTriggerでないもの)はStart時に無効化, falseにする
 
             // Get animator layer indices by name, for later use switching between hand visuals
             m_animLayerIndexPoint = m_animator.GetLayerIndex(ANIM_LAYER_NAME_POINT);

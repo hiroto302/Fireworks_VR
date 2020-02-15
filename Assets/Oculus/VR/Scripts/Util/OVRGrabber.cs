@@ -391,13 +391,16 @@ public class OVRGrabber : MonoBehaviour
         m_grabbedObj = null;
     }
 
+    // 掴み判定
     protected virtual void GrabVolumeEnable(bool enabled)
     {
         if (m_grabVolumeEnabled == enabled)
         {
             return;
         }
+        //手から離れてtrueの時、下記の処理を行わない
 
+        //GrabBeginでfalseとなり、下記の処理が実行される
         m_grabVolumeEnabled = enabled;
         for (int i = 0; i < m_grabVolumes.Length; ++i)
         {
